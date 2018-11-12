@@ -17,7 +17,6 @@ const nameMatchesSearchTerm = searchTerm => ({name}) => {
 export default class FilteringContainer extends React.Component {
   state = {
     filterText: '',
-    filterTerm: '',
   };
 
   getChildContext = () => {
@@ -40,7 +39,11 @@ export default class FilteringContainer extends React.Component {
   }
 
   setFilterTerm() {
-    this.setState(ps => ({filterTerm: ps.filterText}));
+    const {onFilterChange} = this.props;
+    const {filterText} = this.state;
+    onFilterChange(nodes => filterText === ""
+      ? {nodes: nodes, nodeParentMappings: {}}
+      : filterNodes(nameMatchesSearchTerm(filterText), nodes, [], {expanded: true}));
   }
 
   handleFilterTextChange = e => {
@@ -52,24 +55,16 @@ export default class FilteringContainer extends React.Component {
   };
 
   render() {
-    const {filterTerm, filterText} = this.state;
+    const {filterText} = this.state;
     const {
       nodes,
+      nodeParentMappings,
       children: treeRenderer,
       groups,
       selectedGroup,
       groupRenderer: GroupRenderer,
       onSelectedGroupChange,
     } = this.props;
-
-    const relevantNodes =
-      groups && selectedGroup && groups[selectedGroup]
-        ? filterNodes(groups[selectedGroup].filter, nodes)
-        : {nodes, nodeParentMappings: []};
-
-    const {nodes: filteredNodes, nodeParentMappings} = filterTerm
-      ? filterNodes(nameMatchesSearchTerm(filterTerm), relevantNodes.nodes)
-      : relevantNodes;
 
     return (
       <div className="tree-filter-container">
@@ -78,7 +73,7 @@ export default class FilteringContainer extends React.Component {
           <i aria-hidden="true" className="mi mi-11 mi-search" />
           {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
         </div>
-        {treeRenderer({nodes: filteredNodes, nodeParentMappings})}
+        {treeRenderer({nodes, nodeParentMappings})}
       </div>
     );
   }
@@ -91,4 +86,6 @@ FilteringContainer.propTypes = {
   selectedGroup: PropTypes.string,
   groupRenderer: PropTypes.func,
   onSelectedGroupChange: PropTypes.func,
+  nodes: PropTypes.array.isRequired,
+  nodeParentMappings: PropTypes.object.isRequired
 };
