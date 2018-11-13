@@ -47,7 +47,7 @@ export default class TreeContainer extends React.Component {
     const rowIndex = getRowIndexFromId(flattenedTree, this.props.scrollToId);
     return (
       <Tree
-        nodeMarginLeft={this.props.nodeMarginLeft}
+        nodePaddingLeft={this.props.nodePaddingLeft}
         nodes={flattenedTree}
         onChange={this.handleChange}
         NodeRenderer={this.props.children}
@@ -64,11 +64,11 @@ TreeContainer.propTypes = {
   nodes: PropTypes.arrayOf(PropTypes.shape(Node)).isRequired,
   onChange: PropTypes.func,
   children: PropTypes.func.isRequired,
-  nodeMarginLeft: PropTypes.number,
+  nodePaddingLeft: PropTypes.number,
   width: PropTypes.number,
   scrollToId: PropTypes.number,
 };
 
 TreeContainer.defaultProps = {
-  nodeMarginLeft: 30,
+  nodePaddingLeft: 30,
 };
