@@ -5,15 +5,33 @@ import {AutoSizer, List, CellMeasurerCache, CellMeasurer} from 'react-virtualize
 
 import {FlattenedNode} from './shapes/nodeShapes';
 
+const checkHasSelectedChildren = ({node, selectedMap}) => {
+  if (selectedMap[node.id])
+    return true;
+
+  for (const child of (node.children || [])) {
+    if (checkHasSelectedChildren({node: child, selectedMap}))
+      return true;
+  }
+};
+
 export default class Tree extends React.Component {
   _cache = new CellMeasurerCache({
     fixedWidth: true,
     minHeight: 20,
   });
 
-  rowRenderer = ({node, key, measure, style, NodeRenderer, selectedMap, treeNodeSelectedClass}) => {
-    const {nodePaddingLeft} = this.props;
-    const className = classNames("tree-node", {[treeNodeSelectedClass]: selectedMap[node.id]});
+  rowRenderer = ({node, key, measure, style, NodeRenderer, selectedMap}) => {
+    const {nodePaddingLeft, extraClasses} = this.props;
+    const {
+      treeNodeSelectedClass = "",
+      treeNodeChildSelectedClass = "",
+    } = extraClasses;
+
+    const className = classNames("tree-node", {
+      [treeNodeSelectedClass]: selectedMap[node.id],
+      [treeNodeChildSelectedClass]: checkHasSelectedChildren({node, selectedMap})
+    });
     return (
       <div key={key} className={className} style={{...style, paddingLeft: node.deepness * nodePaddingLeft}}>
         <NodeRenderer node={node} onChange={this.props.onChange} measure={measure} />
@@ -21,20 +39,19 @@ export default class Tree extends React.Component {
     );
   };
 
-  measureRowRenderer = (nodes, selectedMap, treeNodeSelectedClass) => ({key, index, style, parent}) => {
+  measureRowRenderer = (nodes, selectedMap) => ({key, index, style, parent}) => {
     const {NodeRenderer} = this.props;
     const node = nodes[index];
 
     return (
       <CellMeasurer cache={this._cache} columnIndex={0} key={key} rowIndex={index} parent={parent}>
-        {m => this.rowRenderer({...m, node, key, style, NodeRenderer, selectedMap, treeNodeSelectedClass})}
+        {m => this.rowRenderer({...m, node, key, style, NodeRenderer, selectedMap})}
       </CellMeasurer>
     );
   };
 
   render() {
-    const {nodes, width, scrollToIndex, selectedMap, treeNodeSelectedClass = ""} = this.props;
-
+    const {nodes, width, scrollToIndex, selectedMap} = this.props;
     return (
       <AutoSizer disableWidth={Boolean(width)}>
         {({height, width: autoWidth}) => (
@@ -44,7 +61,7 @@ export default class Tree extends React.Component {
             height={height}
             rowCount={nodes.length}
             rowHeight={this._cache.rowHeight}
-            rowRenderer={this.measureRowRenderer(nodes, selectedMap, treeNodeSelectedClass)}
+            rowRenderer={this.measureRowRenderer(nodes, selectedMap)}
             width={width || autoWidth}
             scrollToIndex={scrollToIndex}
           />
@@ -60,6 +77,9 @@ Tree.propTypes = {
   onChange: PropTypes.func.isRequired,
   nodePaddingLeft: PropTypes.number,
   width: PropTypes.number,
-  treeNodeSelectedClass: PropTypes.string,
+  extraClasses: PropTypes.shape({
+    treeNodeSelectedClass: PropTypes.string,
+    treeNodeChildSelectedClass: PropTypes.string,
+  }),
   selectedMap: PropTypes.object.isRequired,
 };
