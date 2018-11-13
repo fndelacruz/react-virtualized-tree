@@ -48,6 +48,8 @@ export default class TreeContainer extends React.Component {
     return (
       <Tree
         nodePaddingLeft={this.props.nodePaddingLeft}
+        treeNodeSelectedClass={this.props.treeNodeSelectedClass}
+        selectedMap={this.props.selectedMap}
         nodes={flattenedTree}
         onChange={this.handleChange}
         NodeRenderer={this.props.children}
@@ -67,6 +69,8 @@ TreeContainer.propTypes = {
   nodePaddingLeft: PropTypes.number,
   width: PropTypes.number,
   scrollToId: PropTypes.number,
+  treeNodeSelectedClass: PropTypes.string,
+  selectedMap: PropTypes.object.isRequired,
 };
 
 TreeContainer.defaultProps = {
