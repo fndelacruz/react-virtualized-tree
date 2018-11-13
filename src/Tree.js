@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import {AutoSizer, List, CellMeasurerCache, CellMeasurer} from 'react-virtualized';
 
 import {FlattenedNode} from './shapes/nodeShapes';
@@ -10,29 +11,29 @@ export default class Tree extends React.Component {
     minHeight: 20,
   });
 
-  rowRenderer = ({node, key, measure, style, NodeRenderer}) => {
+  rowRenderer = ({node, key, measure, style, NodeRenderer, selectedMap, treeNodeSelectedClass}) => {
     const {nodePaddingLeft} = this.props;
-
+    const className = classNames("tree-node", {[treeNodeSelectedClass]: selectedMap[node.id]});
     return (
-      <div key={key} className="tree-node" style={{...style, paddingLeft: node.deepness * nodePaddingLeft}}>
+      <div key={key} className={className} style={{...style, paddingLeft: node.deepness * nodePaddingLeft}}>
         <NodeRenderer node={node} onChange={this.props.onChange} measure={measure} />
       </div>
     );
   };
 
-  measureRowRenderer = nodes => ({key, index, style, parent}) => {
+  measureRowRenderer = (nodes, selectedMap, treeNodeSelectedClass) => ({key, index, style, parent}) => {
     const {NodeRenderer} = this.props;
     const node = nodes[index];
 
     return (
       <CellMeasurer cache={this._cache} columnIndex={0} key={key} rowIndex={index} parent={parent}>
-        {m => this.rowRenderer({...m, node, key, style, NodeRenderer})}
+        {m => this.rowRenderer({...m, node, key, style, NodeRenderer, selectedMap, treeNodeSelectedClass})}
       </CellMeasurer>
     );
   };
 
   render() {
-    const {nodes, width, scrollToIndex} = this.props;
+    const {nodes, width, scrollToIndex, selectedMap, treeNodeSelectedClass = ""} = this.props;
 
     return (
       <AutoSizer disableWidth={Boolean(width)}>
@@ -43,7 +44,7 @@ export default class Tree extends React.Component {
             height={height}
             rowCount={nodes.length}
             rowHeight={this._cache.rowHeight}
-            rowRenderer={this.measureRowRenderer(nodes)}
+            rowRenderer={this.measureRowRenderer(nodes, selectedMap, treeNodeSelectedClass)}
             width={width || autoWidth}
             scrollToIndex={scrollToIndex}
           />
@@ -59,4 +60,6 @@ Tree.propTypes = {
   onChange: PropTypes.func.isRequired,
   nodePaddingLeft: PropTypes.number,
   width: PropTypes.number,
+  treeNodeSelectedClass: PropTypes.string,
+  selectedMap: PropTypes.object.isRequired,
 };
