@@ -29,13 +29,14 @@ export default class FilteringContainer extends React.Component {
 
   static defaultProps = {
     debouncer: debounce,
+    debounceWait: 300,
     groupRenderer: DefaultGroupRenderer,
   };
 
   constructor(props) {
     super(props);
 
-    this.setFilterTerm = props.debouncer(this.setFilterTerm, 300);
+    this.setFilterTerm = props.debouncer(this.setFilterTerm, props.debounceWait);
   }
 
   setFilterTerm() {
@@ -92,5 +93,6 @@ FilteringContainer.propTypes = {
   groupRenderer: PropTypes.func,
   onSelectedGroupChange: PropTypes.func,
   nodes: PropTypes.array.isRequired,
+  debounceWait: PropTypes.number,
   nodeParentMappings: PropTypes.object.isRequired
 };
