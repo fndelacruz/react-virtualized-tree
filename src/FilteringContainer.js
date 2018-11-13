@@ -64,16 +64,21 @@ export default class FilteringContainer extends React.Component {
       selectedGroup,
       groupRenderer: GroupRenderer,
       onSelectedGroupChange,
+      extraClasses = {},
     } = this.props;
+    const {
+      filteringContainerClass = "",
+      inputWrapperClass = "",
+      inputClass = "",
+    } = extraClasses;
 
     return (
-      <div className="tree-filter-container">
-        <div className={classNames('tree-lookup-input', {group: !!groups})}>
-          <input value={filterText} onChange={this.handleFilterTextChange} placeholder="Search..." />
-          <i aria-hidden="true" className="mi mi-11 mi-search" />
-          {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
-        </div>
+      <div className={(classNames("tree-filter-container", filteringContainerClass))}>
         {treeRenderer({nodes, nodeParentMappings})}
+        <div className={classNames('tree-lookup-input', inputWrapperClass, {group: !!groups})}>
+          {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
+          <input className={inputClass} value={filterText} onChange={this.handleFilterTextChange} placeholder="Search..." />
+        </div>
       </div>
     );
   }
