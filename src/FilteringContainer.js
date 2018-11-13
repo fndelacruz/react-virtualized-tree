@@ -31,6 +31,7 @@ export default class FilteringContainer extends React.Component {
     debouncer: debounce,
     debounceWait: 300,
     groupRenderer: DefaultGroupRenderer,
+    searchPlacerholder: "Search ..."
   };
 
   constructor(props) {
@@ -67,6 +68,7 @@ export default class FilteringContainer extends React.Component {
       groupRenderer: GroupRenderer,
       onSelectedGroupChange,
       extraClasses = {},
+      searchPlacerholder
     } = this.props;
     const {
       filteringContainerClass = "",
@@ -79,7 +81,7 @@ export default class FilteringContainer extends React.Component {
         {treeRenderer({nodes, nodeParentMappings})}
         <div className={classNames('tree-lookup-input', inputWrapperClass, {group: !!groups})}>
           {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
-          <input className={inputClass} value={filterText} onChange={this.handleFilterTextChange} placeholder="Search..." />
+          <input className={inputClass} value={filterText} onChange={this.handleFilterTextChange} placeholder={searchPlacerholder} />
         </div>
       </div>
     );
@@ -95,5 +97,6 @@ FilteringContainer.propTypes = {
   onSelectedGroupChange: PropTypes.func,
   nodes: PropTypes.array.isRequired,
   debounceWait: PropTypes.number,
+  searchPlacerholder: PropTypes.string,
   nodeParentMappings: PropTypes.object.isRequired
 };
