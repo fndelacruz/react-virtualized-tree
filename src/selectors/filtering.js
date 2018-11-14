@@ -1,6 +1,6 @@
 const INITIAL_FILTERED_VALUE = {nodes: [], nodeParentMappings: {}};
 
-export const filterNodes = (filter, nodes, parents = [], stateOverride = {}) =>
+export const filterNodes = (filter, nodes, parents = [], stateOverride = () => ({})) =>
   nodes.reduce((filtered, n) => {
     const {nodes: filteredChildren, nodeParentMappings: childrenNodeMappings} = n.children
       ? filterNodes(filter, n.children, [...parents, n.x], stateOverride)
@@ -15,7 +15,7 @@ export const filterNodes = (filter, nodes, parents = [], stateOverride = {}) =>
               ...n,
               state: {
                 ...(n.state || {}),
-                ...stateOverride
+                ...stateOverride(n)
               },
               children: filteredChildren,
             },

@@ -45,7 +45,7 @@ export default class FilteringContainer extends React.Component {
     const {onFilterChange} = this.props;
     const {filterText} = this.state;
     onFilterChange({
-      filterFn: nodes => filterNodes(nameMatchesSearchTerm(filterText), nodes, [], {expanded: filterText !== ""}),
+      filterFn: nodes => filterNodes(nameMatchesSearchTerm(filterText), nodes, [], (node) => ({expanded: filterText !== ""})),
       filterTerm: filterText
     });
   }
