@@ -4,8 +4,8 @@
 import * as React from 'react';
 
 interface BasicNode {
-  id: number | string;
-  name: string;
+  x: number | string;
+  xPretty: string;
   state?: {[stateKey: string]: any};
 }
 

@@ -3,7 +3,7 @@ const INITIAL_FILTERED_VALUE = {nodes: [], nodeParentMappings: {}};
 export const filterNodes = (filter, nodes, parents = [], stateOverride = {}) =>
   nodes.reduce((filtered, n) => {
     const {nodes: filteredChildren, nodeParentMappings: childrenNodeMappings} = n.children
-      ? filterNodes(filter, n.children, [...parents, n.id], stateOverride)
+      ? filterNodes(filter, n.children, [...parents, n.x], stateOverride)
       : INITIAL_FILTERED_VALUE;
 
     return !(filter(n) || filteredChildren.length)
@@ -23,7 +23,7 @@ export const filterNodes = (filter, nodes, parents = [], stateOverride = {}) =>
           nodeParentMappings: {
             ...filtered.nodeParentMappings,
             ...childrenNodeMappings,
-            [n.id]: parents,
+            [n.x]: parents,
           },
         };
   }, INITIAL_FILTERED_VALUE);

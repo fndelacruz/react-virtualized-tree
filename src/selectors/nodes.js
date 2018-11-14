@@ -29,11 +29,11 @@ const NODE_CHANGE_OPERATIONS = {
   CHANGE_NODE: (nodes, updatedNode) =>
     nodes.map(
       n =>
-        n.id === updatedNode.id
+        n.x === updatedNode.x
           ? omit({...updatedNode, ...(n.children && {children: [...n.children]})}, FLATTEN_TREE_PROPERTIES)
           : n,
     ),
-  DELETE_NODE: (nodes, updatedNode) => nodes.filter(n => n.id !== updatedNode.id),
+  DELETE_NODE: (nodes, updatedNode) => nodes.filter(n => n.x !== updatedNode.x),
 };
 
 export const replaceNodeFromTree = (nodes, updatedNode, operation = NODE_OPERATION_TYPES.CHANGE_NODE) => {
@@ -47,7 +47,7 @@ export const replaceNodeFromTree = (nodes, updatedNode, operation = NODE_OPERATI
     return NODE_CHANGE_OPERATIONS[operation](nodes, updatedNode);
   }
 
-  const parentIndex = nodes.findIndex(n => n.id === parents[0]);
+  const parentIndex = nodes.findIndex(n => n.x === parents[0]);
   const preSiblings = nodes.slice(0, parentIndex);
   const postSiblings = nodes.slice(parentIndex + 1);
 
@@ -94,4 +94,4 @@ export const addNode = node => ({
   type: UPDATE_TYPE.ADD,
 });
 
-export const getRowIndexFromId = (flattenedTree, id) => flattenedTree.findIndex(node => node.id === id);
+export const getRowIndexFromId = (flattenedTree, x) => flattenedTree.findIndex(node => node.x === x);

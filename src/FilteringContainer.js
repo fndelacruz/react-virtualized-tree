@@ -7,8 +7,8 @@ import DefaultGroupRenderer from './filtering/DefaultGroupRenderer';
 import {Node} from './shapes/nodeShapes';
 import {filterNodes} from './selectors/filtering';
 
-const nameMatchesSearchTerm = searchTerm => ({name}) => {
-  const upperCaseName = name.toUpperCase();
+const nameMatchesSearchTerm = searchTerm => ({xPretty}) => {
+  const upperCaseName = xPretty.toUpperCase();
   const upperCaseSearchTerm = searchTerm.toUpperCase();
 
   return upperCaseName.indexOf(upperCaseSearchTerm.trim()) > -1;

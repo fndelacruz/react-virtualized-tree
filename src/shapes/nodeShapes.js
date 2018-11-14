@@ -7,8 +7,8 @@ export const NodeState = {
 };
 
 const BasicNode = {
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  name: PropTypes.string,
+  x: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  xPretty: PropTypes.string,
   state: PropTypes.shape(NodeState),
 };
 

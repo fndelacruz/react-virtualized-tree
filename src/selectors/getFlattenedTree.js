@@ -10,5 +10,5 @@ export const getFlattenedTree = (nodes, parents = []) =>
       return [...flattenedTree, nodeWithHelpers];
     }
 
-    return [...flattenedTree, nodeWithHelpers, ...getFlattenedTree(node.children, [...parents, node.id])];
+    return [...flattenedTree, nodeWithHelpers, ...getFlattenedTree(node.children, [...parents, node.x])];
   }, []);

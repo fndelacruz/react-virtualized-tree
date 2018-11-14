@@ -6,7 +6,7 @@ import {AutoSizer, List, CellMeasurerCache, CellMeasurer} from 'react-virtualize
 import {FlattenedNode} from './shapes/nodeShapes';
 
 const checkHasSelectedChildren = ({node, selectedMap}) => {
-  if (selectedMap[node.id])
+  if (selectedMap[node.x])
     return true;
 
   for (const child of (node.children || [])) {
@@ -29,7 +29,7 @@ export default class Tree extends React.Component {
     } = extraClasses;
 
     const className = classNames("tree-node", {
-      [treeNodeSelectedClass]: selectedMap[node.id],
+      [treeNodeSelectedClass]: selectedMap[node.x],
       [treeNodeChildSelectedClass]: checkHasSelectedChildren({node, selectedMap})
     });
     return (
