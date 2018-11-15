@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import debounce from 'lodash.debounce';
 import classNames from 'classnames';
-
+import {DebounceInput} from 'react-debounce-input';
 import DefaultGroupRenderer from './filtering/DefaultGroupRenderer';
 import {Node} from './shapes/nodeShapes';
 import {filterNodes} from './selectors/filtering';
@@ -28,8 +27,6 @@ export default class FilteringContainer extends React.Component {
   };
 
   static defaultProps = {
-    debouncer: debounce,
-    debounceWait: 300,
     groupRenderer: DefaultGroupRenderer,
     searchIconElement: null,
     searchPlacerholder: "Search ..."
@@ -38,7 +35,7 @@ export default class FilteringContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setFilterTerm = props.debouncer(this.setFilterTerm, props.debounceWait);
+    this.setFilterTerm = this.setFilterTerm;
   }
 
   setFilterTerm() {
@@ -84,7 +81,7 @@ export default class FilteringContainer extends React.Component {
         <div className={classNames('tree-lookup-input', inputWrapperClass, {group: !!groups})}>
           {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
           {searchIconElement}
-          <input className={inputClass} value={filterText} onChange={this.handleFilterTextChange} placeholder={searchPlacerholder} />
+          <DebounceInput debounceTimeout={300} className={inputClass} onChange={this.handleFilterTextChange} placeholder={searchPlacerholder} />
         </div>
       </div>
     );
@@ -93,13 +90,11 @@ export default class FilteringContainer extends React.Component {
 
 FilteringContainer.propTypes = {
   children: PropTypes.func.isRequired,
-  debouncer: PropTypes.func,
   groups: PropTypes.object,
   selectedGroup: PropTypes.string,
   groupRenderer: PropTypes.func,
   onSelectedGroupChange: PropTypes.func,
   nodes: PropTypes.array.isRequired,
-  debounceWait: PropTypes.number,
   searchPlacerholder: PropTypes.string,
   searchIconElement: PropTypes.element,
   nodeParentMappings: PropTypes.object.isRequired
